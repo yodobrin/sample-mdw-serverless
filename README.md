@@ -4,7 +4,14 @@ End to end sample of data processing to be viewed in pbi
 
 ## Use Case
 
-Contoso is an organization with multiple factories and multiple industrial lines. Periodicly factories need to upload data. The data is constructed of zipped JSON lines.
+Contoso is an organization with multiple factories and multiple industrial lines. The factories need to upload data periodically. The data is constructed of zipped JSON lines:
+
+```json
+{"factoryId": 1782, "line": 3, "count": 638462, "location" : "coimbra"}
+{"factoryId": 1782, "line": 6, "count": 46766282, "location" : "coimbra"}
+{"factoryId": 1770, "line": 1, "count": 6282, "location" : "porto"}
+```
+
 Contoso already developed a component named ControlBox, its capabilities (out of scope for this sample) are:
 
 - Authenticate and authorize factories.
@@ -13,21 +20,41 @@ Contoso already developed a component named ControlBox, its capabilities (out of
 
 - Register new data uploaded in a control table.
 
-Contoso, are looking for cost-effective solution, which will be able to provide Contoso Analytical team better view of the data.
+Contoso is looking for cost-effective solution, which will be able to provide Contoso Analytical team better view of the data.
 
-## Suggested Architecture
+## Architecture
 
-The following diagram illustrate the solution suggested (and implemented) by Contoso. It leverages serverless computing for data movement, cleansing, restructure and reporting.
+The following diagram illustrates the solution suggested (and implemented) by Contoso. It leverages serverless computing for data movement, cleansing, restructure and reporting.
 
 ![architecture](./images/art.png)
 
+### Control Table
+
+The control table is stored saves the following information:
+
+TODO
+
 ### Bronze to Silver
 
-Using a lookup step quering the control table and a copy activity the Synpase pipeline can process the new file drop. While the source reads the zipped multi line JSON files, the sink uses the parquet format, keeping the directory structure and file names.
+The data from the different factories lands in the same storage account. Consoso has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per line and per date. See the following example: Contoso/bronze/factory=1782/line=3/y=2022/m=07/d=24
+
+In the Synapse workspace, a Lookup activity will query the control table and filter the relevant entries.
+The lookup activity output will be used as Items of a ForEach activity to iterate over all factories and all its industrial lines. For each factory and line we will apply the relevant business logic.
 
 ![pipeline](./images/pipeline-b2s.png)
 
-The parquet files can be queried using Synapse Serverless SQL Pool. Here is an example:
+#### Read the data
+Create a linked service to read the zipped multi line JSON files.
+
+TO DO
+
+Select the zip format where?
+Select the file format where?
+
+#### Write the data
+Create a linked service to the silver container and save the data in a parquet format and keep the originL directory structure and file names.
+
+The parquet files can be queried using Synapse Serverless SQL Pool. See the following example:
 
 ```sql
 select * 
@@ -92,7 +119,7 @@ GO
 
 #### Create external table
 
-Finally lets make use of the resources and data created, by creating the external table, this sample is essentially coping the entire content of all parquet files into a single table, this is the place where addtional aggregations, filtering can be applied.
+Finally lets make use of the resources and data created, by creating the external table, this sample is essentially coping the entire content of all parquet files into a single table, this is the place where additional aggregations, filtering can be applied.
 
 ```sql
 CREATE EXTERNAL TABLE table_name
@@ -105,11 +132,10 @@ CREATE EXTERNAL TABLE table_name
     select * 
     FROM
     OPENROWSET(
-        BULK 'https://<storage account>.dfs.core.windows.net/<silver cobtainer>/<folder>/**',
+        BULK 'https://<storage account>.dfs.core.windows.net/<silver container>/<folder>/**',
         FORMAT = 'PARQUET'
     ) AS [result]
 
 ```
 
-After this activity is completed, you can access the table using the serverless SQL pool, or from PowerBI.
-
+After this activity is completed, you can access the table using the serverless SQL pool, or from [Power BI](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/export-to-data-lake-data-powerbi#prerequisites).
