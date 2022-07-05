@@ -44,6 +44,7 @@ The lookup activity output will be used as Items of a ForEach activity to iterat
 ![pipeline](./images/pipeline-b2s.png)
 
 #### Read the data
+
 Create a linked service to read the zipped multi line JSON files.
 
 TO DO
@@ -52,6 +53,7 @@ Select the zip format where?
 Select the file format where?
 
 #### Write the data
+
 Create a linked service to the silver container and save the data in a parquet format and keep the originL directory structure and file names.
 
 The parquet files can be queried using Synapse Serverless SQL Pool. See the following example:
