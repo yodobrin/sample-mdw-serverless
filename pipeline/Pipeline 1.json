@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup1",
+				"name": "GetFactories",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
