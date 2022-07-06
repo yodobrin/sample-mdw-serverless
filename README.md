@@ -153,5 +153,4 @@ As part of the sample we included bicep code, which will create the minimum requ
 3. Edit ```deploy/bicep/param.json``` and provide your values, they should be self explained.
 
 4. run ```azurecli
-az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json
-```
+az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json```
