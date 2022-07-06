@@ -22,7 +22,8 @@
 					"dataset": {
 						"referenceName": "ControlTable",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
