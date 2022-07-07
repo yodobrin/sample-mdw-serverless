@@ -1,0 +1,98 @@
+{
+	"name": "all factories",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetNewDroppedFiles",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select * from farms where \nUpdateDate = CAST(', '''', formatDateTime(pipeline().parameters.run_date), '''',' AS DATE)')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Per_Factory_model",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetNewDroppedFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetNewDroppedFiles').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "copy_bronze_to_silver",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": false,
+										"wildcardFolderPath": {
+											"value": "@item().FileLocation",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings",
+											"preserveZipFileNameAsFolder": false
+										}
+									}
+								},
+								"enableStaging": false
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string",
+				"defaultValue": "2022-06-28"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-05T10:55:15Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
