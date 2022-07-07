@@ -16,13 +16,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@concat('select * from farms where \nUpdateDate = CAST(', '''', formatDateTime(pipeline().parameters.run_date), '''',' AS DATE)')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "AzureTableSource",
+						"azureTableSourceQuery": "@concat('UpdateDate lt ', '''', pipeline().parameters.run_date, '''')",
+						"azureTableSourceIgnoreTableNotFound": false
+					},
+					"dataset": {
+						"referenceName": "control_table",
+						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
 				}
@@ -66,18 +66,272 @@
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "JsonReadSettings"
+										"type": "JsonReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings"
+										}
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
 									}
 								},
 								"enableStaging": false,
 								"translator": {
 									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['dataModelName']"
+											},
+											"sink": {
+												"name": "dataModelName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['operation']"
+											},
+											"sink": {
+												"name": "operation"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['factory']"
+											},
+											"sink": {
+												"name": "factory"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['lineId']"
+											},
+											"sink": {
+												"name": "lineId"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['date']"
+											},
+											"sink": {
+												"name": "date"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['oaDate']"
+											},
+											"sink": {
+												"name": "oaDate"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['feature1']"
+											},
+											"sink": {
+												"name": "feature1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['dim']"
+											},
+											"sink": {
+												"name": "dim"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['yield']"
+											},
+											"sink": {
+												"name": "yield"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['conductivity']"
+											},
+											"sink": {
+												"name": "conductivity"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['feature2']"
+											},
+											"sink": {
+												"name": "feature2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['productionRate']"
+											},
+											"sink": {
+												"name": "productionRate"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['isFeature3']"
+											},
+											"sink": {
+												"name": "isFeature3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['yieldAvg']"
+											},
+											"sink": {
+												"name": "yieldAvg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['conductivityAvg']"
+											},
+											"sink": {
+												"name": "conductivityAvg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['feature2Avg']"
+											},
+											"sink": {
+												"name": "feature2Avg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['fat']"
+											},
+											"sink": {
+												"name": "fat"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['protein']"
+											},
+											"sink": {
+												"name": "protein"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['lactose']"
+											},
+											"sink": {
+												"name": "lactose"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['urea']"
+											},
+											"sink": {
+												"name": "urea"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['blood']"
+											},
+											"sink": {
+												"name": "blood"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['component7']"
+											},
+											"sink": {
+												"name": "component7"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['ecm']"
+											},
+											"sink": {
+												"name": "ecm"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['fcm']"
+											},
+											"sink": {
+												"name": "fcm"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['fatAvg']"
+											},
+											"sink": {
+												"name": "fatAvg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['proteinAvg']"
+											},
+											"sink": {
+												"name": "proteinAvg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['lactoseAvg']"
+											},
+											"sink": {
+												"name": "lactoseAvg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['ureaAvg']"
+											},
+											"sink": {
+												"name": "ureaAvg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['data']['bloodAvg']"
+											},
+											"sink": {
+												"name": "bloodAvg"
+											}
+										}
+									],
+									"collectionReference": "",
 									"mapComplexValuesToString": false
 								}
 							},
 							"inputs": [
 								{
-									"referenceName": "temp1",
+									"referenceName": "bronze",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "silver_1",
 									"type": "DatasetReference"
 								}
 							]

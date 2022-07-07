@@ -1,0 +1,19 @@
+{
+	"name": "silver_1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "medalion_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "silver"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
