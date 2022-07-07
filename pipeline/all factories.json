@@ -62,24 +62,25 @@
 									"type": "JsonSource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": false,
-										"wildcardFolderPath": {
-											"value": "@item().FileLocation",
-											"type": "Expression"
-										},
-										"wildcardFileName": "*",
+										"fileListPath": "bronze/daily.data",
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "JsonReadSettings",
-										"compressionProperties": {
-											"type": "ZipDeflateReadSettings",
-											"preserveZipFileNameAsFolder": false
-										}
+										"type": "JsonReadSettings"
 									}
 								},
-								"enableStaging": false
-							}
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mapComplexValuesToString": false
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "temp1",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
