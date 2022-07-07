@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureTableSource",
-						"azureTableSourceQuery": "@concat('UpdateDate lt ', '''', pipeline().parameters.run_date, '''')",
+						"azureTableSourceQuery": {
+							"value": "@concat('UpdateDate lt ', '''', pipeline().parameters.run_date, '''')",
+							"type": "Expression"
+						},
 						"azureTableSourceIgnoreTableNotFound": false
 					},
 					"dataset": {
@@ -96,7 +99,8 @@
 												"path": "$['dataModelName']"
 											},
 											"sink": {
-												"name": "dataModelName"
+												"name": "dataModelName",
+												"type": "String"
 											}
 										},
 										{
@@ -104,7 +108,8 @@
 												"path": "$['operation']"
 											},
 											"sink": {
-												"name": "operation"
+												"name": "operation",
+												"type": "String"
 											}
 										},
 										{
@@ -112,7 +117,8 @@
 												"path": "$['data']['factory']"
 											},
 											"sink": {
-												"name": "factory"
+												"name": "factory",
+												"type": "Int32"
 											}
 										},
 										{
@@ -120,7 +126,8 @@
 												"path": "$['data']['lineId']"
 											},
 											"sink": {
-												"name": "lineId"
+												"name": "lineId",
+												"type": "Int32"
 											}
 										},
 										{
@@ -128,7 +135,8 @@
 												"path": "$['data']['date']"
 											},
 											"sink": {
-												"name": "date"
+												"name": "date",
+												"type": "DateTime"
 											}
 										},
 										{
@@ -136,7 +144,8 @@
 												"path": "$['data']['oaDate']"
 											},
 											"sink": {
-												"name": "oaDate"
+												"name": "oaDate",
+												"type": "Int32"
 											}
 										},
 										{
@@ -144,7 +153,8 @@
 												"path": "$['data']['feature1']"
 											},
 											"sink": {
-												"name": "feature1"
+												"name": "feature1",
+												"type": "Int32"
 											}
 										},
 										{
@@ -152,7 +162,8 @@
 												"path": "$['data']['dim']"
 											},
 											"sink": {
-												"name": "dim"
+												"name": "dim",
+												"type": "Int32"
 											}
 										},
 										{
@@ -160,7 +171,8 @@
 												"path": "$['data']['yield']"
 											},
 											"sink": {
-												"name": "yield"
+												"name": "yield",
+												"type": "Int32"
 											}
 										},
 										{
@@ -168,7 +180,8 @@
 												"path": "$['data']['conductivity']"
 											},
 											"sink": {
-												"name": "conductivity"
+												"name": "conductivity",
+												"type": "Int32"
 											}
 										},
 										{
@@ -176,7 +189,8 @@
 												"path": "$['data']['feature2']"
 											},
 											"sink": {
-												"name": "feature2"
+												"name": "feature2",
+												"type": "Int32"
 											}
 										},
 										{
@@ -184,7 +198,8 @@
 												"path": "$['data']['productionRate']"
 											},
 											"sink": {
-												"name": "productionRate"
+												"name": "productionRate",
+												"type": "Int32"
 											}
 										},
 										{
@@ -192,7 +207,8 @@
 												"path": "$['data']['isFeature3']"
 											},
 											"sink": {
-												"name": "isFeature3"
+												"name": "isFeature3",
+												"type": "Boolean"
 											}
 										},
 										{
@@ -200,7 +216,8 @@
 												"path": "$['data']['yieldAvg']"
 											},
 											"sink": {
-												"name": "yieldAvg"
+												"name": "yieldAvg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -208,7 +225,8 @@
 												"path": "$['data']['conductivityAvg']"
 											},
 											"sink": {
-												"name": "conductivityAvg"
+												"name": "conductivityAvg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -216,7 +234,8 @@
 												"path": "$['data']['feature2Avg']"
 											},
 											"sink": {
-												"name": "feature2Avg"
+												"name": "feature2Avg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -224,7 +243,8 @@
 												"path": "$['data']['fat']"
 											},
 											"sink": {
-												"name": "fat"
+												"name": "fat",
+												"type": "Int32"
 											}
 										},
 										{
@@ -232,7 +252,8 @@
 												"path": "$['data']['protein']"
 											},
 											"sink": {
-												"name": "protein"
+												"name": "protein",
+												"type": "Int32"
 											}
 										},
 										{
@@ -240,7 +261,8 @@
 												"path": "$['data']['lactose']"
 											},
 											"sink": {
-												"name": "lactose"
+												"name": "lactose",
+												"type": "Int32"
 											}
 										},
 										{
@@ -248,7 +270,8 @@
 												"path": "$['data']['urea']"
 											},
 											"sink": {
-												"name": "urea"
+												"name": "urea",
+												"type": "Int32"
 											}
 										},
 										{
@@ -256,7 +279,8 @@
 												"path": "$['data']['blood']"
 											},
 											"sink": {
-												"name": "blood"
+												"name": "blood",
+												"type": "Int32"
 											}
 										},
 										{
@@ -264,7 +288,8 @@
 												"path": "$['data']['component7']"
 											},
 											"sink": {
-												"name": "component7"
+												"name": "component7",
+												"type": "Int32"
 											}
 										},
 										{
@@ -272,7 +297,8 @@
 												"path": "$['data']['ecm']"
 											},
 											"sink": {
-												"name": "ecm"
+												"name": "ecm",
+												"type": "Int32"
 											}
 										},
 										{
@@ -280,7 +306,8 @@
 												"path": "$['data']['fcm']"
 											},
 											"sink": {
-												"name": "fcm"
+												"name": "fcm",
+												"type": "Int32"
 											}
 										},
 										{
@@ -288,7 +315,8 @@
 												"path": "$['data']['fatAvg']"
 											},
 											"sink": {
-												"name": "fatAvg"
+												"name": "fatAvg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -296,7 +324,8 @@
 												"path": "$['data']['proteinAvg']"
 											},
 											"sink": {
-												"name": "proteinAvg"
+												"name": "proteinAvg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -304,7 +333,8 @@
 												"path": "$['data']['lactoseAvg']"
 											},
 											"sink": {
-												"name": "lactoseAvg"
+												"name": "lactoseAvg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -312,7 +342,8 @@
 												"path": "$['data']['ureaAvg']"
 											},
 											"sink": {
-												"name": "ureaAvg"
+												"name": "ureaAvg",
+												"type": "Int32"
 											}
 										},
 										{
@@ -320,7 +351,8 @@
 												"path": "$['data']['bloodAvg']"
 											},
 											"sink": {
-												"name": "bloodAvg"
+												"name": "bloodAvg",
+												"type": "Int32"
 											}
 										}
 									],
