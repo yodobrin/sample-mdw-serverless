@@ -1,6 +1,10 @@
 {
 	"name": "temp1",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "medalion_storage",
+			"type": "LinkedServiceReference"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
