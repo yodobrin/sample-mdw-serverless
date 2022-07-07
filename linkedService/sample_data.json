@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://raw.githubusercontent.com/MSFT-FTA-EMEA-ISV/sample-mdw-serverless/main/sample_data/bronze/factory=1234/line=11-22-33/y=2022/m=06/d=24/daily.zip",
+			"url": "https://raw.githubusercontent.com/MSFT-FTA-EMEA-ISV/sample-mdw-serverless/main/sample_data",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
