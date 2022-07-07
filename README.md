@@ -6,10 +6,13 @@ End to end sample of data processing to be viewed in pbi
 
 Contoso is an organization with multiple factories and multiple industrial lines. The factories need to upload data periodically. The data is constructed of zipped JSON lines:
 
+TODO: replace json bellow by the one used in the sample
+
 ```json
-{"factoryId": 1782, "line": 3, "count": 638462, "location" : "coimbra"}
-{"factoryId": 1782, "line": 6, "count": 46766282, "location" : "coimbra"}
-{"factoryId": 1770, "line": 1, "count": 6282, "location" : "porto"}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14874,"date":"2022-06-23T00:00:00"}}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14777,"date":"2022-06-23T00:00:00"}}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14939,"date":"2022-06-23T00:00:00"}}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14793,"date":"2022-06-23T00:00:00"}}
 ```
 
 Contoso already developed a component named ControlBox, its capabilities (out of scope for this sample) are:
@@ -30,9 +33,16 @@ The following diagram illustrates the solution suggested (and implemented) by Co
 
 ### Control Table
 
-The control table is stored saves the following information:
+A control table is used to store relevant information about the data uploaded into browse layer. This information will be used to know the location of all the uploaded files per factory and industrial line as well as uploaded date. Every time a new file lands in bronze layer this table is automatically updated by another process (out of scope for this sample).
 
-TODO
+FactoryID | LineID | FileLocation | UpdateDate
+---|---|--- |---
+1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-26
+1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-26
+1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-27
+... | ... | ...| ...
+
+In this sample, the control table was stored in a Azure Storage Table.
 
 ### Bronze to Silver
 
@@ -45,12 +55,23 @@ The lookup activity output will be used as Items of a ForEach activity to iterat
 
 #### Read the data
 
+##### Linked service
+
+In Synapse, when reading data from the storage account, we must configure a linked service as a source. This will read data in. To configure this, we must create a query of the data we want to read in.
+
 Create a linked service to read the zipped multi line JSON files.
 
-TO DO
+##### Get relevant files from bronze into Synapse Analytics
 
-Select the zip format where?
-Select the file format where?
+The following pipeline parameters were created:
+
+- pipeline.factory_id (not sure if possible)
+- pipeline.line_id (not sure if possible)
+- pipeline.run_date
+
+These parameters will be populated manually before triggering the pipeline run and will be used to filter the relevant entries from the control table for each pipeline run.
+
+![query](./images/query_control_table.png)
 
 #### Write the data
 
