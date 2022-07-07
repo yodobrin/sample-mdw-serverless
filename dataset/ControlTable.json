@@ -1,0 +1,15 @@
+{
+	"name": "ControlTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ControlTableLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "ControlTable"
+		}
+	}
+}

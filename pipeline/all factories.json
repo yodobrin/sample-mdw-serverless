@@ -1,0 +1,121 @@
+{
+	"name": "all factories",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetNewDroppedFiles",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureTableSource",
+						"azureTableSourceQuery": {
+							"value": "@concat('UpdateDate lt ', '''', pipeline().parameters.run_date, '''')",
+							"type": "Expression"
+						},
+						"azureTableSourceIgnoreTableNotFound": false
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Per_Factory_model",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetNewDroppedFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetNewDroppedFiles').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "copy_bronze_to_silver",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"fileListPath": "bronze/daily.data",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mapComplexValuesToString": false
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "temp1",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "silver_data",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string",
+				"defaultValue": "2022-06-28"
+			},
+			"key": {
+				"type": "string",
+				"defaultValue": "1234"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-05T10:55:15Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

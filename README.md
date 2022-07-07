@@ -162,3 +162,16 @@ CREATE EXTERNAL TABLE table_name
 ```
 
 After this activity is completed, you can access the table using the serverless SQL pool, or from [Power BI](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/export-to-data-lake-data-powerbi#prerequisites).
+
+## Working with this sample
+
+As part of the sample we included bicep code, which will create the minimum required resources for it to run.
+
+1. You are expected to create a resource group in which resources would be created.
+
+2. Clone this repository to your local machine.
+
+3. Edit ```deploy/bicep/param.json``` and provide your values, they should be self explained.
+
+4. run ```azurecli
+az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json```
