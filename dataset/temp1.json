@@ -1,0 +1,111 @@
+{
+	"name": "temp1",
+	"properties": {
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "daily.data",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"dataModelName": {
+					"type": "string"
+				},
+				"operation": {
+					"type": "string"
+				},
+				"data": {
+					"type": "object",
+					"properties": {
+						"factory": {
+							"type": "integer"
+						},
+						"lineId": {
+							"type": "integer"
+						},
+						"date": {
+							"type": "string"
+						},
+						"oaDate": {
+							"type": "integer"
+						},
+						"feature1": {
+							"type": "integer"
+						},
+						"dim": {
+							"type": "integer"
+						},
+						"yield": {
+							"type": "integer"
+						},
+						"conductivity": {
+							"type": "integer"
+						},
+						"feature2": {
+							"type": "integer"
+						},
+						"productionRate": {
+							"type": "integer"
+						},
+						"isFeature3": {
+							"type": "boolean"
+						},
+						"yieldAvg": {
+							"type": "integer"
+						},
+						"conductivityAvg": {
+							"type": "null"
+						},
+						"feature2Avg": {
+							"type": "null"
+						},
+						"fat": {
+							"type": "integer"
+						},
+						"protein": {
+							"type": "integer"
+						},
+						"lactose": {
+							"type": "integer"
+						},
+						"urea": {
+							"type": "integer"
+						},
+						"blood": {
+							"type": "integer"
+						},
+						"component7": {
+							"type": "null"
+						},
+						"ecm": {
+							"type": "number"
+						},
+						"fcm": {
+							"type": "number"
+						},
+						"fatAvg": {
+							"type": "null"
+						},
+						"proteinAvg": {
+							"type": "null"
+						},
+						"lactoseAvg": {
+							"type": "null"
+						},
+						"ureaAvg": {
+							"type": "null"
+						},
+						"bloodAvg": {
+							"type": "null"
+						}
+					}
+				}
+			}
+		}
+	}
+}
