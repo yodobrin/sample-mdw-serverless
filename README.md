@@ -71,13 +71,11 @@ The following pipeline parameters were created:
 
 These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
 
-![query](./images/query_control_table.png)
+![query](./images/query_control_table.PNG)
 
 #### Transform the data
 
-To keep this sample more generic, we will skip any data manipulation and will just copy the data from bronze to silver layer. A Copy() activity will be defined inside a ForEach() activity that will iterate over the output of the Lookup() activity.
-
-TODO: Add image of the foreach showing how to iterate over lookup output
+To keep this sample more generic, we will skip any data manipulation and will just copy the data from bronze to silver layer. A Copy() activity will be defined inside a ForEach() activity that will iterate over the output of the Lookup() activity, ```@activity('GetNewDroppedFiles').output.value```.
 
 > As for time, in order to extract the nested JSON values you will have to map these values to a type in the Mapping tab of the Copy() activity.  
 
@@ -98,9 +96,9 @@ FROM
 
 ### Silver to Gold
 
-As described in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas) there are few initilization activities. In the following sections Serverless SQL pool is used.
+As described in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas) there are few initialization activities. In the following sections Serverless SQL pool is used.
 
-#### Create a Database, master key & scopped credentials
+#### Create a Database, master key & scoped credentials
 
 ```sql
 -- Create a DB
@@ -114,9 +112,9 @@ SECRET = ''
 
 ```
 
-In order to create SAS token, you can follow this [document](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/document-translation/create-sas-tokens?tabs=Containers). Alternate solution in case you want one scopped credentials that can be used for the entire storage account. This can be created using the portal as well:
+In order to create SAS token, you can follow this [document](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/document-translation/create-sas-tokens?tabs=Containers). Alternate solution in case you want one scoped credentials that can be used for the entire storage account. This can be created using the portal as well:
 
-- Click on 'Shared Access Signeture' in the Security + Networking blads:
+- Click on 'Shared Access Signature' in the Security + Networking blads:
 
 ![blade](./images/blade.png)
 
@@ -126,7 +124,7 @@ In order to create SAS token, you can follow this [document](https://docs.micros
 
 #### Create External File format
 
-The following statment needs to be executed once per workspace:
+The following statement needs to be executed once per workspace:
 
 ```sql
 IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') 
@@ -181,5 +179,5 @@ As part of the sample we included bicep code, which will create the minimum requ
 
 3. Edit ```deploy/bicep/param.json``` and provide your values, they should be self explained.
 
-4. run ```azurecli
+4. Run ```azurecli
 az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json```
