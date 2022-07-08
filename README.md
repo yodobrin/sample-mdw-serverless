@@ -69,9 +69,17 @@ The following pipeline parameters were created:
 - pipeline.line_id (not sure if possible)
 - pipeline.run_date
 
-These parameters will be populated manually before triggering the pipeline run and will be used to filter the relevant entries from the control table for each pipeline run.
+These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
 
 ![query](./images/query_control_table.png)
+
+#### Transform the data
+
+To keep this sample more generic, we will skip any data manipulation and will just copy the data from bronze to silver layer. A Copy() activity will be defined inside a ForEach() activity that will iterate over the output of the Lookup() activity.
+
+TODO: Add image of the foreach showing how to iterate over lookup output
+
+> As for time, in order to extract the nested JSON values you will have to map these values to a type in the Mapping tab of the Copy() activity.  
 
 #### Write the data
 
