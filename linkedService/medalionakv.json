@@ -1,0 +1,10 @@
+{
+	"name": "medalionakv",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://medalionakv12.vault.azure.net/"
+		}
+	}
+}
