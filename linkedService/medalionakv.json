@@ -4,7 +4,7 @@
 		"parameters": {
 			"medalion_keyvault_name": {
 				"type": "String",
-				"defaultValue": "medalionakv<suffix>"
+				"defaultValue": "medalionakv13"
 			}
 		},
 		"annotations": [],
