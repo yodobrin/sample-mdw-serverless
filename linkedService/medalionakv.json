@@ -1,0 +1,16 @@
+{
+	"name": "medalionakv",
+	"properties": {
+		"parameters": {
+			"medalion_keyvault_name": {
+				"type": "String",
+				"defaultValue": "medalionakv<suffix>"
+			}
+		},
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "@{concat('https://',linkedService().medalion_keyvault_name,'.vault.azure.net/')\n}"
+		}
+	}
+}

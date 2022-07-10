@@ -135,3 +135,16 @@ resource synapse_fw 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = {
   }
   parent: synapse
 }
+
+
+module AKV 'keyvault-rbac.bicep' = {
+  name: 'keyVault'  
+  params: {
+    key_vault_name: 'medalionakv${suffix}'
+    userObjId : userObjectId
+    accountKeySecretValue: lake_storage.listKeys().keys[0].value
+    accountCSSecretValue: 'DefaultEndpointsProtocol=https;AccountName=${lake_storage.name};AccountKey=${lake_storage.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+    location: location
+    SynapseIdentityObjId: synapse.identity.principalId
+  }
+}

@@ -175,9 +175,15 @@ As part of the sample we included bicep code, which will create the minimum requ
 
 1. You are expected to create a resource group in which resources would be created.
 
-2. Clone this repository to your local machine.
+2. Clone (or fork) this repository.
 
 3. Edit ```deploy/bicep/param.json``` and provide your values, they should be self explained.
 
 4. Run ```azurecli
 az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json```
+
+5. Open the newly created Synpase workspace, it should open without errors. There should two linked ADLS Gen2 items, one is the storage account named ```medalionsynapse<suffix>```.
+
+6. Point your workspace to the cloned/forked repository. [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
+
+7. Modify the linked services parameter to reflect real values (Azure KeyVault name and Azure storage account name)
