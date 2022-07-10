@@ -186,4 +186,4 @@ az deployment group create --resource-group <your rg name> --template-file main.
 
 6. Point your workspace to the cloned/forked repository. [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
 
-7. Modify <tbd>
+7. Modify the linked services parameter to reflect real values (Azure KeyVault name and Azure storage account name)
