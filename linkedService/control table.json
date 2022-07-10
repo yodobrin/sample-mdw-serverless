@@ -4,7 +4,7 @@
 		"parameters": {
 			"table_storage_account": {
 				"type": "String",
-				"defaultValue": "medalionlake<suffix>"
+				"defaultValue": "medalionlake13"
 			}
 		},
 		"annotations": [],
@@ -17,7 +17,7 @@
 					"referenceName": "medalionakv",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"medalion_keyvault_name": "medalionakv<suffix>"
+						"medalion_keyvault_name": "medalionakv13"
 					}
 				},
 				"secretName": "medalion-acc-key"
