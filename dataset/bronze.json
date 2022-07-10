@@ -1,0 +1,23 @@
+{
+	"name": "bronze",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "medalion_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "*",
+				"folderPath": "@item().FileLocation",
+				"fileSystem": "bronze"
+			},
+			"compression": {
+				"type": "ZipDeflate"
+			}
+		},
+		"schema": {}
+	}
+}
