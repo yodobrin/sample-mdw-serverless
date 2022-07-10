@@ -6,10 +6,13 @@ End to end sample of data processing to be viewed in pbi
 
 Contoso is an organization with multiple factories and multiple industrial lines. The factories need to upload data periodically. The data is constructed of zipped JSON lines:
 
+TODO: replace json bellow by the one used in the sample
+
 ```json
-{"factoryId": 1782, "line": 3, "count": 638462, "location" : "coimbra"}
-{"factoryId": 1782, "line": 6, "count": 46766282, "location" : "coimbra"}
-{"factoryId": 1770, "line": 1, "count": 6282, "location" : "porto"}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14874,"date":"2022-06-23T00:00:00"}}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14777,"date":"2022-06-23T00:00:00"}}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14939,"date":"2022-06-23T00:00:00"}}
+{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14793,"date":"2022-06-23T00:00:00"}}
 ```
 
 Contoso already developed a component named ControlBox, its capabilities (out of scope for this sample) are:
@@ -30,9 +33,16 @@ The following diagram illustrates the solution suggested (and implemented) by Co
 
 ### Control Table
 
-The control table is stored saves the following information:
+A control table is used to store relevant information about the data uploaded into browse layer. This information will be used to know the location of all the uploaded files per factory and industrial line as well as uploaded date. Every time a new file lands in bronze layer this table is automatically updated by another process (out of scope for this sample).
 
-TODO
+FactoryID | LineID | FileLocation | UpdateDate
+---|---|--- |---
+1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-26
+1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-26
+1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-27
+... | ... | ...| ...
+
+In this sample, the control table was stored in a Azure Storage Table.
 
 ### Bronze to Silver
 
@@ -45,12 +55,29 @@ The lookup activity output will be used as Items of a ForEach activity to iterat
 
 #### Read the data
 
+##### Linked service
+
+In Synapse, when reading data from the storage account, we must configure a linked service as a source. This will read data in. To configure this, we must create a query of the data we want to read in.
+
 Create a linked service to read the zipped multi line JSON files.
 
-TO DO
+##### Get relevant files from bronze into Synapse Analytics
 
-Select the zip format where?
-Select the file format where?
+The following pipeline parameters were created:
+
+- pipeline.factory_id (not sure if possible)
+- pipeline.line_id (not sure if possible)
+- pipeline.run_date
+
+These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
+
+![query](./images/query_control_table.PNG)
+
+#### Transform the data
+
+To keep this sample more generic, we will skip any data manipulation and will just copy the data from bronze to silver layer. A Copy() activity will be defined inside a ForEach() activity that will iterate over the output of the Lookup() activity, ```@activity('GetNewDroppedFiles').output.value```.
+
+> As for time, in order to extract the nested JSON values you will have to map these values to a type in the Mapping tab of the Copy() activity.  
 
 #### Write the data
 
@@ -69,9 +96,9 @@ FROM
 
 ### Silver to Gold
 
-As described in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas) there are few initilization activities. In the following sections Serverless SQL pool is used.
+As described in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas) there are few initialization activities. In the following sections Serverless SQL pool is used.
 
-#### Create a Database, master key & scopped credentials
+#### Create a Database, master key & scoped credentials
 
 ```sql
 -- Create a DB
@@ -85,9 +112,9 @@ SECRET = ''
 
 ```
 
-In order to create SAS token, you can follow this [document](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/document-translation/create-sas-tokens?tabs=Containers). Alternate solution in case you want one scopped credentials that can be used for the entire storage account. This can be created using the portal as well:
+In order to create SAS token, you can follow this [document](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/document-translation/create-sas-tokens?tabs=Containers). Alternate solution in case you want one scoped credentials that can be used for the entire storage account. This can be created using the portal as well:
 
-- Click on 'Shared Access Signeture' in the Security + Networking blads:
+- Click on 'Shared Access Signature' in the Security + Networking blads:
 
 ![blade](./images/blade.png)
 
@@ -97,7 +124,7 @@ In order to create SAS token, you can follow this [document](https://docs.micros
 
 #### Create External File format
 
-The following statment needs to be executed once per workspace:
+The following statement needs to be executed once per workspace:
 
 ```sql
 IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') 
@@ -152,5 +179,5 @@ As part of the sample we included bicep code, which will create the minimum requ
 
 3. Edit ```deploy/bicep/param.json``` and provide your values, they should be self explained.
 
-4. run ```azurecli
+4. Run ```azurecli
 az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json```
