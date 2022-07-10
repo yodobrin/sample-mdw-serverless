@@ -1,10 +1,16 @@
 {
 	"name": "medalion_storage",
 	"properties": {
+		"parameters": {
+			"medalion_storage_name": {
+				"type": "String",
+				"defaultValue": "medalionlake<suffix>"
+			}
+		},
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
-			"url": "https://medalionlake12.dfs.core.windows.net/"
+			"url": "@{concat('https://',linkedService().medalion_storage_name, '.dfs.core.windows.net/') }"
 		}
 	},
 	"type": "Microsoft.Synapse/workspaces/linkedservices"
