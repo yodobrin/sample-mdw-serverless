@@ -1,10 +1,6 @@
 {
 	"name": "dropped_file_list",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "test_to_b_del",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
