@@ -42,7 +42,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "droppedfiles",
+						"referenceName": "droppedfiles_is_it_needed",
 						"type": "DatasetReference"
 					}
 				]
