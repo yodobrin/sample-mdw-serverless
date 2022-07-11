@@ -1,6 +1,13 @@
 {
 	"name": "dropped_file_list",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "medalion_storage",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"medalion_storage_name": "medalionlake12"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
