@@ -16,15 +16,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureTableSource",
-						"azureTableSourceQuery": {
-							"value": "@concat('UpdateDate lt ', '''', pipeline().parameters.run_date, '''')",
-							"type": "Expression"
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "dropped_files.json",
+							"enablePartitionDiscovery": false
 						},
-						"azureTableSourceIgnoreTableNotFound": false
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
 					},
 					"dataset": {
-						"referenceName": "control_table",
+						"referenceName": "dropped_file_list",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
