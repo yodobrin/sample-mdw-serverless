@@ -13,7 +13,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "dropped_files.json",
 				"fileSystem": "bronze"
 			}
 		},
