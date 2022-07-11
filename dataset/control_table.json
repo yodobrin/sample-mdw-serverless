@@ -3,7 +3,10 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "control table",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"table_storage_account": "medalionlake12"
+			}
 		},
 		"annotations": [],
 		"type": "AzureTable",
