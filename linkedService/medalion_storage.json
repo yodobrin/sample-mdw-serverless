@@ -4,13 +4,17 @@
 		"parameters": {
 			"medalion_storage_name": {
 				"type": "String",
-				"defaultValue": "medalionlake12"
+				"defaultValue": "medalionlake13"
 			}
 		},
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
-			"url": "@{concat('https://',linkedService().medalion_storage_name, '.dfs.core.windows.net/')}"
+			"url": "@{concat('https://',linkedService().medalion_storage_name, '.dfs.core.windows.net/') }"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.Synapse/workspaces/linkedservices"
