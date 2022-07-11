@@ -4,7 +4,7 @@
 		"parameters": {
 			"medalion_storage_name": {
 				"type": "String",
-				"defaultValue": "medalionlake<suffix>"
+				"defaultValue": "medalionlake12"
 			}
 		},
 		"annotations": [],
