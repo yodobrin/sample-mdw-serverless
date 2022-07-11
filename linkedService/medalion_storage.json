@@ -10,7 +10,7 @@
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
-			"url": "@{concat('https://',linkedService().medalion_storage_name, '.dfs.core.windows.net/') }"
+			"url": "@{concat('https://',linkedService().medalion_storage_name, '.dfs.core.windows.net/')}"
 		}
 	},
 	"type": "Microsoft.Synapse/workspaces/linkedservices"
