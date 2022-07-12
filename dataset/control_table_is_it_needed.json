@@ -1,10 +1,6 @@
 {
-	"name": "control_table",
+	"name": "control_table_is_it_needed",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "control table",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureTable",
 		"schema": [],

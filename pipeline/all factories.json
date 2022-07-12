@@ -16,15 +16,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureTableSource",
-						"azureTableSourceQuery": {
-							"value": "@concat('UpdateDate lt ', '''', pipeline().parameters.run_date, '''')",
-							"type": "Expression"
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "dropped_files.json",
+							"enablePartitionDiscovery": false
 						},
-						"azureTableSourceIgnoreTableNotFound": false
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
 					},
 					"dataset": {
-						"referenceName": "control_table",
+						"referenceName": "dropped_file_list",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -78,16 +82,6 @@
 										"compressionProperties": {
 											"type": "ZipDeflateReadSettings"
 										}
-									}
-								},
-								"sink": {
-									"type": "ParquetSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings",
-										"copyBehavior": "FlattenHierarchy"
-									},
-									"formatSettings": {
-										"type": "ParquetWriteSettings"
 									}
 								},
 								"sink": {
@@ -372,12 +366,6 @@
 							"inputs": [
 								{
 									"referenceName": "bronze",
-									"type": "DatasetReference"
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "silver_2",
 									"type": "DatasetReference"
 								}
 							],

@@ -1,0 +1,22 @@
+{
+	"name": "droppedfiles_is_it_needed",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "medalion_storage",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"medalion_storage_name": "medalionlake12"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "daily.zip",
+				"folderPath": "factory=1234/line=11-22-33/y=2022/m=06/d=24/",
+				"fileSystem": "bronze"
+			}
+		}
+	}
+}
