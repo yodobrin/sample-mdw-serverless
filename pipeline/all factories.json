@@ -80,7 +80,8 @@
 									"formatSettings": {
 										"type": "JsonReadSettings",
 										"compressionProperties": {
-											"type": "ZipDeflateReadSettings"
+											"type": "ZipDeflateReadSettings",
+											"preserveZipFileNameAsFolder": false
 										}
 									}
 								},
@@ -384,10 +385,6 @@
 			"run_date": {
 				"type": "string",
 				"defaultValue": "2022-06-28"
-			},
-			"key": {
-				"type": "string",
-				"defaultValue": "1234"
 			}
 		},
 		"annotations": [],
