@@ -6,8 +6,6 @@ End to end sample of data processing to be viewed in pbi
 
 Contoso is an organization with multiple factories and multiple industrial lines. The factories need to upload data periodically. The data is constructed of zipped JSON lines:
 
-TODO: replace json bellow by the one used in the sample
-
 ```json
 {"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14874,"date":"2022-06-23T00:00:00"}}
 {"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14777,"date":"2022-06-23T00:00:00"}}
@@ -37,19 +35,19 @@ A control table is used to store relevant information about the data uploaded in
 
 FactoryID | LineID | FileLocation | UpdateDate
 ---|---|--- |---
-1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-26
-1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-26
-1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-27
+1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25
+1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25
+1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-26
 ... | ... | ...| ...
 
-In this sample, the control table was stored in a Azure Storage Table.
+In this sample, the control table was stored in a JSON file.
 
 ### Bronze to Silver
 
-The data from the different factories lands in the same storage account. Consoso has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per line and per date. See the following example: Contoso/bronze/factory=1782/line=3/y=2022/m=07/d=24
+The data from the different factories lands in the same storage account. Consoso has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per date. See the following example: Contoso/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24
 
-In the Synapse workspace, a Lookup activity will query the control table and filter the relevant entries.
-The lookup activity output will be used as Items of a ForEach activity to iterate over all factories and all its industrial lines. For each factory and line we will apply the relevant business logic.
+In the Synapse workspace, a Lookup activity will query the control table and filter the entries to process.
+The lookup activity output will be used as Items of a ForEach activity to iterate over all factories and all its industrial lines. For each factory and data model we will apply the relevant business logic.
 
 ![pipeline](./images/pipeline-b2s.png)
 
@@ -66,7 +64,7 @@ Create a linked service to read the zipped multi line JSON files.
 The following pipeline parameters were created:
 
 - pipeline.factory_id (not sure if possible)
-- pipeline.line_id (not sure if possible)
+- pipeline.data_model_id (not sure if possible)
 - pipeline.run_date
 
 These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
