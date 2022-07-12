@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "bronze/factory=1234/line=11-22-33/y=2022/m=06/d=24/daily.zip"
+				"relativeUrl": "bronze/factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=24/daily.zip"
 			}
 		}
 	}
