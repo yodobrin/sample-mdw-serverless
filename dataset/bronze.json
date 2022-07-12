@@ -11,7 +11,10 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "*",
-				"folderPath": "@item().FileLocation",
+				"folderPath": {
+					"value": "@item().FileLocation",
+					"type": "Expression"
+				},
 				"fileSystem": "bronze"
 			},
 			"compression": {
