@@ -3,8 +3,7 @@
 	"properties": {
 		"parameters": {
 			"medalion_storage_name": {
-				"type": "String",
-				"defaultValue": "medalionlake13"
+				"type": "String"
 			}
 		},
 		"annotations": [],
