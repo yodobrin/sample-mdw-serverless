@@ -33,14 +33,16 @@ The following diagram illustrates the solution suggested (and implemented) by Co
 
 A control table is used to store relevant information about the data uploaded into browse layer. This information will be used to know the location of all the uploaded files per factory and industrial line as well as uploaded date. Every time a new file lands in bronze layer this table is automatically updated by another process (out of scope for this sample).
 
-FactoryID | LineID | FileLocation | UpdateDate
----|---|--- |---
-1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25
-1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25
-1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-26
-... | ... | ...| ...
+FactoryID | LineID | FileLocation | UpdateDate | Processed
+---|---|--- |--- |---
+1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25 | false
+1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25 | true
+1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-26 | true
+... | ... | ... | ... | ...
 
 In this sample, the control table was stored in a JSON file.
+
+>Note: Manual edit to the control JSON file can be done directly from the portal.
 
 ### Bronze to Silver
 
@@ -184,4 +186,4 @@ az deployment group create --resource-group <your rg name> --template-file main.
 
 6. Point your workspace to the cloned/forked repository. [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
 
-7. Modify the linked services parameter to reflect real values (Azure KeyVault name and Azure storage account name)
+7. Modify the linked services parameter to reflect real values - it is the same value from the bicep ```param.json``` file named ```suffix```. Once you update it as part of the linked service name ```medalion_storage``` it would be reflected in all affected integration datasets.
