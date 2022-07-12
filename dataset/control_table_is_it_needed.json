@@ -1,13 +1,6 @@
 {
 	"name": "control_table_is_it_needed",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "control table",
-			"type": "LinkedServiceReference",
-			"parameters": {
-				"table_storage_account": "medalionlake12"
-			}
-		},
 		"annotations": [],
 		"type": "AzureTable",
 		"schema": [],
