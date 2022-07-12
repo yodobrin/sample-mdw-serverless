@@ -1,9 +1,30 @@
 [        
     {
         "rowkey": "1234-56789",
-        "FactoryId": 1234,
-        "FileLocation": "factory=1234/line=11-22-33/y=2022/m=06/d=24",
-        "LineId": "11-22-33",
+        "FactoryId": 1354010702,
+        "FileLocation": "factory=1234/dataModelName=data_model_1/y=2022/m=06/d=24",
+        "DataModelName": "data_model_1",
+        "UpdateDate": "2022-06-27T22:00:00Z"
+    },
+    {
+        "rowkey": "1234-56789",
+        "FactoryId": 1354010702,
+        "FileLocation": "factory=1234/dataModelName=data_model_1/y=2022/m=06/d=25",
+        "DataModelName": "data_model_1",
+        "UpdateDate": "2022-06-27T22:00:00Z"
+    },
+    {
+        "rowkey": "1234-56789",
+        "FactoryId": 1354010702,
+        "FileLocation": "factory=1234/dataModelName=data_model_2/y=2022/m=06/d=24",
+        "DataModelName": "data_model_2",
+        "UpdateDate": "2022-06-27T22:00:00Z"
+    }
+    {
+        "rowkey": "1234-56789",
+        "FactoryId": 1354010731,
+        "FileLocation": "factory=1234/dataModelName=data_model_1/y=2022/m=06/d=25",
+        "DataModelName": "data_model_1",
         "UpdateDate": "2022-06-27T22:00:00Z"
     }
 ]
