@@ -1,9 +1,9 @@
 {
-	"name": "copy_sample",
+	"name": "Copy  Data Samples",
 	"properties": {
 		"activities": [
 			{
-				"name": "copy_from_git",
+				"name": "Copy data samples",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -50,7 +50,7 @@
 				]
 			},
 			{
-				"name": "copy_list_of_files",
+				"name": "Copy control file",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
