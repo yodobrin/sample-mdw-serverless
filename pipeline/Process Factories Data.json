@@ -1,5 +1,5 @@
 {
-	"name": "Proccess Factories Data",
+	"name": "Process Factories Data",
 	"properties": {
 		"activities": [
 			{
@@ -60,7 +60,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@and(item().Processed, equals(item().DataModelName, 'data_model_2'))",
+									"value": "@and(not(item().Processed), equals(item().DataModelName, 'data_model_2'))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
