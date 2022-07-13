@@ -1,5 +1,5 @@
 {
-	"name": "all factories",
+	"name": "Proccess Factories Data",
 	"properties": {
 		"activities": [
 			{
@@ -35,7 +35,7 @@
 				}
 			},
 			{
-				"name": "Per_Factory_model",
+				"name": "Factory and Model",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -53,8 +53,8 @@
 					},
 					"activities": [
 						{
-							"name": "check if processed",
-							"description": "The update of processed files is out-of-scope for this sample.",
+							"name": "Check if Processed",
+							"description": "The update of control file when an entry is processed is out-of-scope for this sample. Once an entry is processed, the control file must be updated. ",
 							"type": "IfCondition",
 							"dependsOn": [],
 							"userProperties": [],
@@ -65,7 +65,8 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "copy_bronze_to_silver",
+										"name": "Copy Bronze to Silver",
+										"description": "To keep this sample simple as possible, we will just copy data from bronze to silver without doing any data transformation.",
 										"type": "Copy",
 										"dependsOn": [],
 										"policy": {

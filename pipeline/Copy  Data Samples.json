@@ -1,9 +1,9 @@
 {
-	"name": "copy_sample",
+	"name": "Copy  Data Samples",
 	"properties": {
 		"activities": [
 			{
-				"name": "copy_from_git",
+				"name": "Copy data samples",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -26,10 +26,12 @@
 						}
 					},
 					"sink": {
-						"type": "BinarySink",
+						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"copyBehavior": "PreserveHierarchy"
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
 						}
 					},
 					"enableStaging": false
@@ -42,13 +44,13 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "droppedfiles_is_it_needed",
+						"referenceName": "dropped_file_list",
 						"type": "DatasetReference"
 					}
 				]
 			},
 			{
-				"name": "copy_list_of_files",
+				"name": "Copy control file",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
