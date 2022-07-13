@@ -27,12 +27,9 @@
 						}
 					},
 					"sink": {
-						"type": "JsonSink",
+						"type": "BinarySink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
 						}
 					},
 					"enableStaging": false
@@ -45,7 +42,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "dropped_file_list",
+						"referenceName": "dropped_files",
 						"type": "DatasetReference"
 					}
 				]
