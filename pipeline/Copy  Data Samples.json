@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "Copy data samples",
+				"description": "can i commit directly w/o pr?",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
