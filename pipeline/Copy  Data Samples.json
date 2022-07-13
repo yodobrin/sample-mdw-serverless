@@ -50,7 +50,7 @@
 				]
 			},
 			{
-				"name": "GetControlFile",
+				"name": "Get Control File",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -89,11 +89,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEach Data Sample",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "GetControlFile",
+						"activity": "Get Control File",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -102,12 +102,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('GetControlFile').output.value",
+						"value": "@activity('Get Control File').output.value",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Copy data samples",
+							"name": "Copy Data Sample",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
