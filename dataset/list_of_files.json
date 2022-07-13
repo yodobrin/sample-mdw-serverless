@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "bronze/dropped_files.json"
+				"relativeUrl": "dropped_files.json"
 			}
 		},
 		"schema": {}
