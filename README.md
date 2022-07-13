@@ -173,17 +173,16 @@ After this activity is completed, you can access the table using the serverless 
 
 As part of the sample we included bicep code, which will create the minimum required resources for it to run.
 
-1. You are expected to create a resource group in which resources would be created.
+1. You are expected to create a resource group in which the resources would be created.
 
 2. Clone (or fork) this repository.
 
-3. Edit ```deploy/bicep/param.json``` and provide your values, they should be self explained.
+3. Edit ```deploy/bicep/param.json``` file and provide your values, they should be self explained.
 
-4. Run ```azurecli
-az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json```
+4. Open a command line and run ```az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json``` on the 'bicep' folder.
 
-5. Open the newly created Synpase workspace, it should open without errors. There should two linked ADLS Gen2 items, one is the storage account named ```medalionsynapse<suffix>```.
+5. Open the newly created Synpase workspace, it should open without errors. There you should have two linked ADLS Gen2 items, one is the storage account named ```medalionsynapse<suffix>``` and the other is ? TODO.
 
-6. Point your workspace to the cloned/forked repository. [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
+6. Point the workspace to the cloned/forked repository [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
 
 7. Modify the linked services parameter to reflect real values - it is the same value from the bicep ```param.json``` file named ```suffix```. Once you update it as part of the linked service name ```medalion_storage``` it would be reflected in all affected integration datasets.
