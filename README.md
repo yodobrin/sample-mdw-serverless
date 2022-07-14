@@ -31,27 +31,32 @@ The following diagram illustrates the solution suggested (and implemented) by Co
 
 ### Control Table
 
-A control table is used to store relevant information about the data uploaded into browse layer. This information will be used to know the location of all the uploaded files per factory and industrial line as well as uploaded date. Every time a new file lands in bronze layer this table is automatically updated by another process (out of scope for this sample).
+A control table is used to store information about the data uploaded into browse layer. This table stores the location of all the uploaded files per factory, the data model, uploaded date and if the file was already processed or not.
 
-FactoryID | LineID | FileLocation | UpdateDate | Processed
+FactoryID | DataModelName | FileLocation | UpdateDate | Processed
 ---|---|--- |--- |---
-1354010702 | 14874 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25 | false
-1354010702 | 14834 | factory=1354010702/line=14874/y=2022/m=06/d=25| 2022-06-25 | true
-1353534654 | 35634 | factory=1353534654/line=35634/y=2022/m=06/d=26| 2022-06-26 | true
+1354010702 | data_model_1 | factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=25| 2022-06-25 | false
+1354010702 | data_model_2 | factory=1354010702/dataModelName=data_model_2/y=2022/m=06/d=25| 2022-06-25 | true
+1353534654 | data_model_1 | factory=1353534654/dataModelName=data_model_1/y=2022/m=06/d=26| 2022-06-26 | true
 ... | ... | ... | ... | ...
 
-In this sample, the control table was stored in a JSON file.
+Every time a new file lands in bronze layer this table must be automatically updated by another process (out of scope for this sample).
 
->Note: Manual edit to the control JSON file can be done directly from the portal.
+>Note: To keep this sample simple, the control information was hardcoded in a JSON file named dropped_files.json (manual edit to the control JSON file can be done directly from the portal). However, for production this is an anti-pattern and we strongly advise using a metadata table and a process to automatically update it when a new file lands in bronze and when a file is processed.
 
 ### Bronze to Silver
 
-The data from the different factories lands in the same storage account. Consoso has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per date. See the following example: Contoso/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24
+The data from the different factories lands in the same storage account. The storage account has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per date. See the following example: 
 
-In the Synapse workspace, a Lookup activity will query the control table and filter the entries to process.
-The lookup activity output will be used as Items of a ForEach activity to iterate over all factories and all its industrial lines. For each factory and data model we will apply the relevant business logic.
+Contoso/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24
 
-![pipeline](./images/pipeline-b2s.png)
+In the Synapse workspace, a Lookup activity will read the control table information.
+There is a ForEach() per data model that will iterate over all factories with unprocessed files. For each factory and data model the relevant business logic should be applied. To keep this sample more generic, the files are just copied from bronze to silver in a parquet format.
+
+![pipeline](./images/factories_pipeline.png)
+
+
+Inside each ForEach() activity, there is a IfCondition() activity which filters the unprocessed data using the following condition TODO.  
 
 #### Read the data
 
@@ -186,3 +191,7 @@ As part of the sample we included bicep code, which will create the minimum requ
 6. Point the workspace to the cloned/forked repository [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
 
 7. Modify the linked services parameter to reflect real values - it is the same value from the bicep ```param.json``` file named ```suffix```. Once you update it as part of the linked service name ```medalion_storage``` it would be reflected in all affected integration datasets.
+
+8. Run the 'Copy Data Samples' pipeline. This will copy the control file and the data samples to your local repository.
+
+9. Run the 'Process Factories Data'. This will run the Bronze to Silver transformations per factory and per data model.
