@@ -69,7 +69,7 @@ The sample files consist of daily dropped data in zip format. Each zip file cont
 {"dataModelName":"data_model_1","operation":"I","data":{"factory":1354010702,"lineId":15025,"date":"2022-06-24T00:00:00","feature1":0,"dim":0,"yield":5223}}
 {"dataModelName":"data_model_1","operation":"I","data":{"factory":1354010702,"lineId":15027,"date":"2022-06-24T00:00:00","feature1":0,"dim":0,"yield":865}}
 {"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15043,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":235}}
-{"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15045,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":325    0}}
+{"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15045,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":325}}
 ```
 
 ### Control Table
@@ -114,18 +114,6 @@ While this process might be tedious - you will need to spend time on it, ensurin
 In Synapse, when reading data from the storage account, we must configure a linked service as a source. This will read data in. To configure this, we must create a query of the data we want to read in.
 
 Create a linked service to read the zipped multi line JSON files.
-
-##### Get relevant files from bronze into Synapse Analytics
-
-The following pipeline parameters were created:
-
-- pipeline.factory_id (not sure if possible)
-- pipeline.data_model_id (not sure if possible)
-- pipeline.run_date
-
-These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
-
-![query](./images/query_control_table.PNG)
 
 #### Transform the data
 
