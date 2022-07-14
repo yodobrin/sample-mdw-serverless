@@ -207,3 +207,4 @@ As part of the sample we included bicep code, which will create the minimum requ
 11. Open the InitDB SQL script and run the commands by order. Note that the first command need to be executed against the master database, the rest should have the newly created DB as the context.
 
 12. Open the ```Create-External-Tables``` script, replace the suffix with the one used throughout the sample. Run the commands by order.
+1. 
