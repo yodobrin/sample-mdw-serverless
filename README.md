@@ -192,12 +192,18 @@ As part of the sample we included bicep code, which will create the minimum requ
 
 4. Open a command line and run ```az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json``` on the 'bicep' folder.
 
-5. Open the newly created Synpase workspace, it should open without errors. There you should have two linked ADLS Gen2 items, one is the storage account named ```medalionsynapse<suffix>``` and the other is ? TODO.
+5. Open the newly created Synpase workspace, it should open without errors.
 
 6. Point the workspace to the cloned/forked repository [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
 
 7. Modify the linked services parameter to reflect real values - it is the same value from the bicep ```param.json``` file named ```suffix```. Once you update it as part of the linked service name ```medalion_storage``` it would be reflected in all affected integration datasets.
 
+![linke service](./images/linked_service_update.png)
+
 8. Run the 'Copy Data Samples' pipeline. This will copy the control file and the data samples to your local repository.
 
 9. Run the 'Process Factories Data'. This will run the Bronze to Silver transformations per factory and per data model.
+
+11. Open the InitDB SQL script and run the commands by order. Note that the first command need to be executed against the master database, the rest should have the newly created DB as the context.
+
+12. Open the ```Create-External-Tables``` script, replace the suffix with the one used throughout the sample. Run the commands by order.
