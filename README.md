@@ -53,8 +53,7 @@ Contoso/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24
 In the Synapse workspace, a Lookup activity will read the control table information.
 There is a ForEach() per data model that will iterate over all factories with unprocessed files. For each factory and data model the relevant business logic should be applied. To keep this sample more generic, the files are just copied from bronze to silver in a parquet format.
 
-![pipeline](./images/factories_pipeline.png)
-
+![pipeline](./images/factories_pipeline.PNG)
 
 Inside each ForEach() activity, there is a IfCondition() activity which filters the unprocessed data using the following condition TODO.  
 
