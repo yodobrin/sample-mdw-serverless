@@ -46,7 +46,7 @@ Every time a new file lands in bronze layer this table must be automatically upd
 
 ### Bronze to Silver
 
-The data from the different factories lands in the same storage account. The storage account has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per date. See the following example: 
+The data from the different factories lands in the same storage account. The storage account has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per date. See the following example:
 
 Contoso/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24
 
@@ -55,8 +55,14 @@ There is a ForEach() per data model that will iterate over all factories with un
 
 ![pipeline](./images/factories_pipeline.png)
 
+Inside each ForEach() activity, there is a IfCondition() activity which filters the unprocessed data for specific data model.
 
-Inside each ForEach() activity, there is a IfCondition() activity which filters the unprocessed data using the following condition TODO.  
+#### Mapping
+
+Each type of file will have a mapping schema to define what are the types of data to be saved.
+While this process might be tedious - you will need to spend time on it, ensuring your mapped fields are with the right type. Addtional fields (e.g calculated/derived) can be added using this tab.
+
+![mapping](./images/mapping.png)
 
 #### Read the data
 
