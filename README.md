@@ -69,7 +69,7 @@ The sample files consist of daily dropped data in zip format. Each zip file cont
 {"dataModelName":"data_model_1","operation":"I","data":{"factory":1354010702,"lineId":15025,"date":"2022-06-24T00:00:00","feature1":0,"dim":0,"yield":5223}}
 {"dataModelName":"data_model_1","operation":"I","data":{"factory":1354010702,"lineId":15027,"date":"2022-06-24T00:00:00","feature1":0,"dim":0,"yield":865}}
 {"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15043,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":235}}
-{"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15045,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":325    0}}
+{"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15045,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":325}}
 ```
 
 ### Control Table
