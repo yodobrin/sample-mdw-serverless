@@ -3,10 +3,7 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "medalion_storage",
-			"type": "LinkedServiceReference",
-			"parameters": {
-				"suffix": "12"
-			}
+			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "Json",
