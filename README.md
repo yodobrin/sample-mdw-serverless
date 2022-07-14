@@ -115,18 +115,6 @@ In Synapse, when reading data from the storage account, we must configure a link
 
 Create a linked service to read the zipped multi line JSON files.
 
-##### Get relevant files from bronze into Synapse Analytics
-
-The following pipeline parameters were created:
-
-- pipeline.factory_id (not sure if possible)
-- pipeline.data_model_id (not sure if possible)
-- pipeline.run_date
-
-These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
-
-![query](./images/query_control_table.PNG)
-
 #### Transform the data
 
 To keep this sample more generic, we will skip any data manipulation and will just copy the data from bronze to silver layer. A Copy() activity will be defined inside a ForEach() activity that will iterate over the output of the Lookup() activity, ```@activity('GetNewDroppedFiles').output.value```.
