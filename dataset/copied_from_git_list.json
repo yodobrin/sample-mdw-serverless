@@ -5,14 +5,15 @@
 			"referenceName": "medalion_storage",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"medalion_storage_name": "medalionlake12"
+				"suffix": "12"
 			}
 		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "bronze"
 			}
 		},
 		"schema": {}
