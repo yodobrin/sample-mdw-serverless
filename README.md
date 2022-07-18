@@ -1,3 +1,14 @@
+---
+page_type: sample
+languages:
+- bicep
+- sql
+products:
+- azure-synapse-analytics
+- azure-data-lake-gen2
+- power-bi
+---
+
 # sample-mdw-serverless
 
 End to end sample of data processing to be viewed in pbi.
