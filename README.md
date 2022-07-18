@@ -1,17 +1,10 @@
 # sample-mdw-serverless
 
-End to end sample of data processing to be viewed in pbi
+End to end sample of data processing to be viewed in pbi.
 
 ## Use Case
 
-Contoso is an organization with multiple factories and multiple industrial lines. The factories need to upload data periodically. The data is constructed of zipped JSON lines:
-
-```json
-{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14874,"date":"2022-06-23T00:00:00"}}
-{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14777,"date":"2022-06-23T00:00:00"}}
-{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14939,"date":"2022-06-23T00:00:00"}}
-{"dataModelName":"data_model_1","operation":"U","data":{"factory":1354010702,"lineId":14793,"date":"2022-06-23T00:00:00"}}
-```
+Contoso is an organization with multiple factories and multiple data models. Each factory upload data periodically to a storage account. Contoso is looking for cost-effective solution, which will be able to provide their analytical team a better view of the data.
 
 Contoso already developed a component named ControlBox, its capabilities (out of scope for this sample) are:
 
@@ -19,15 +12,74 @@ Contoso already developed a component named ControlBox, its capabilities (out of
 
 - Provide factories with SAS token, used by the factory to upload periodic data.
 
-- Register new data uploaded in a control table.
+- Register new file uploaded in the storage account in a control table.
 
-Contoso is looking for cost-effective solution, which will be able to provide Contoso Analytical team better view of the data.
+- Update the control table each time a file is processed.
 
 ## Architecture
 
-The following diagram illustrates the solution suggested (and implemented) by Contoso. It leverages serverless computing for data movement, cleansing, restructure and reporting.
+The following diagram illustrates the solution implemented by Contoso. It leverages serverless computing for data movement, cleansing, restructure and reporting.
 
 ![architecture](./images/art.png)
+
+## Working with this sample
+
+As part of the sample we included bicep code, which will create the minimum required resources for it to run.
+
+### Prerequisites
+
+The following are the prerequisites for deploying this sample :
+
+- [Azure CLI](https://docs.microsoft.com/en-us/dotnet/azure/install-azure-cli/)
+- [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install/)
+- [Power BI Desktop](https://powerbi.microsoft.com/en-gb/desktop/)
+
+### Setup and deployment
+
+1. Create a resource group in which the resources would be created.
+
+2. Clone or fork this repository.
+
+3. Edit ```deploy/bicep/param.json``` file and provide your values, they should be self explained.
+
+    > Note: The ```suffix``` will be used to create the synapse and the storage instances with a unique namespace in Azure. If the suffix is already in use, please choose another one.
+
+4. Open a command line, go to  'sample-mdw-serverless/deploy/bicep' and run ```az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json``` on the 'bicep' folder. This operation may take a few minutes to complete.
+
+5. Open the newly created Synapse workspace.
+
+6. Point the Synapse workspace to the cloned/forked repository as shown in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
+
+7. In the workspace, go to Manage > Linked Services > medallion_storage > Parameters > suffix and the same value you gave in the bicep ```param.json```. Once you update it would be reflected in all affected integration datasets.
+
+    ![linked service](./images/linked_service_update.png)
+
+8. Run the 'Copy Data Samples' pipeline. This will copy the [control file](#control/table) and the [data samples](#sample-files) to your local repository. [See details.](#sample-files)
+
+9. Run the 'Process Factories Data'. This will run the Bronze to Silver transformations per factory and per data model. [See details.](#bronze-to-silver)
+
+10. Go to and Develop > SQL Scrips > Factories and open the ```InitDB``` script.
+
+11. Run the first commands against the ```master``` database.
+
+12. Run the remaining commands by order against the newly created DB. This pipeline will run the silver to gold data transformations. [See details.](#silver-to-gold)
+
+13. Open the ```Create-External-Tables``` script, replace the ```suffix``` with the one used throughout the sample and the SAS token to access your storage account. Run the commands by order.
+
+14. Open Power BI Desktop and follow the steps in this [document](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/export-to-data-lake-data-powerbi#prerequisites) to connect your Gold Data Lake storage to Power BI Desktop.
+
+## Details
+
+### Sample files
+
+The sample files consist of daily dropped data in zip format. Each zip file contains a data file with a JSON per line.
+
+```JSON
+{"dataModelName":"data_model_1","operation":"I","data":{"factory":1354010702,"lineId":15025,"date":"2022-06-24T00:00:00","feature1":0,"dim":0,"yield":5223}}
+{"dataModelName":"data_model_1","operation":"I","data":{"factory":1354010702,"lineId":15027,"date":"2022-06-24T00:00:00","feature1":0,"dim":0,"yield":865}}
+{"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15043,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":235}}
+{"dataModelName":"data_model_2","operation":"U","data":{"factory":1354010702,"lineId":15045,"date":"2022-06-25T00:00:00","feature1":0,"dim":0,"yield":325}}
+```
 
 ### Control Table
 
@@ -40,59 +92,34 @@ FactoryID | DataModelName | FileLocation | UpdateDate | Processed
 1353534654 | data_model_1 | factory=1353534654/dataModelName=data_model_1/y=2022/m=06/d=26| 2022-06-26 | true
 ... | ... | ... | ... | ...
 
-Every time a new file lands in bronze layer this table must be automatically updated by another process (out of scope for this sample).
+Every time a new file lands in the bronze layer, or it is processed, this table must be automatically updated by another process (out of scope for this sample).
 
->Note: To keep this sample simple, the control information was hardcoded in a JSON file named dropped_files.json (manual edit to the control JSON file can be done directly from the portal). However, for production this is an anti-pattern and we strongly advise using a metadata table and a process to automatically update it when a new file lands in bronze and when a file is processed.
+> Note: To keep this sample simple, the control information was hardcoded in a JSON file named dropped_files.json (manual edit to the control JSON file can be done directly from the portal). However, for production this is an anti-pattern and we strongly advise using a metadata table and a process to automatically update it.
 
 ### Bronze to Silver
 
-The data from the different factories lands in the same storage account. The storage account has a container per layer of a Medallion architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per date. See the following example:
+The data from the different factories lands in the same storage account. The storage account has a container per layer of a Medallion Architecture, bronze, silver and gold. Inside each container there is a folder per factory, per data model and per day. See the following example:
 
-Contoso/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24
+```<your_storage>/bronze/factory=1782/dataModelName=data_model_1/y=2022/m=07/d=24```
 
 In the Synapse workspace, a Lookup activity will read the control table information.
-There is a ForEach() per data model that will iterate over all factories with unprocessed files. For each factory and data model the relevant business logic should be applied. To keep this sample more generic, the files are just copied from bronze to silver in a parquet format.
+There is a ForEach() per data model that will iterate over all factories with unprocessed files. For each factory and data model the relevant business logic would be applied. To keep this sample more generic, the files are just copied from bronze to silver and converted to a parquet format.
 
 ![pipeline](./images/factories_pipeline.PNG)
 
-Inside each ForEach() activity, there is a IfCondition() activity which filters the unprocessed data for specific data model.
+Inside each ForEach() activity, there is a IfCondition() activity, which filters the unprocessed data for specific data model.
 
 #### Mapping
 
-Each type of file will have a mapping schema to define what are the types of data to be saved.
-While this process might be tedious - you will need to spend time on it, ensuring your mapped fields are with the right type. Addtional fields (e.g calculated/derived) can be added using this tab.
+Each type of file will have to be mapped at least once. While this process might be tedious, you will need to spend time on it, to ensure that all the necessary fields are assigned to right type and saved during the sink. Additional fields (e.g calculated/derived) can also be added in this tab.
 
 ![mapping](./images/mapping.png)
 
-#### Read the data
+> As for time, in order to extract the nested JSON values you will have to map these values to a type in the Mapping tab of the Copy() activity.
 
-##### Linked service
+#### Write to silver
 
-In Synapse, when reading data from the storage account, we must configure a linked service as a source. This will read data in. To configure this, we must create a query of the data we want to read in.
-
-Create a linked service to read the zipped multi line JSON files.
-
-##### Get relevant files from bronze into Synapse Analytics
-
-The following pipeline parameters were created:
-
-- pipeline.factory_id (not sure if possible)
-- pipeline.data_model_id (not sure if possible)
-- pipeline.run_date
-
-These parameters will be populated manually before triggering the pipeline run and will be used in the Lookup activity Query to filter the relevant entries from the control table for each pipeline run.
-
-![query](./images/query_control_table.PNG)
-
-#### Transform the data
-
-To keep this sample more generic, we will skip any data manipulation and will just copy the data from bronze to silver layer. A Copy() activity will be defined inside a ForEach() activity that will iterate over the output of the Lookup() activity, ```@activity('GetNewDroppedFiles').output.value```.
-
-> As for time, in order to extract the nested JSON values you will have to map these values to a type in the Mapping tab of the Copy() activity.  
-
-#### Write the data
-
-Create a linked service to the silver container and save the data in a parquet format and keep the originL directory structure and file names.
+The linked service to the storage account is used to write the files to the silver container and save the data in a parquet format. The original directory structure is kept.
 
 The parquet files can be queried using Synapse Serverless SQL Pool. See the following example:
 
@@ -107,7 +134,7 @@ FROM
 
 ### Silver to Gold
 
-As described in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas) there are few initialization activities. In the following sections Serverless SQL pool is used.
+As described in this [document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas) there are few initialization activities. In the following sections, a Serverless SQL pool is used.
 
 #### Create a Database, master key & scoped credentials
 
@@ -123,7 +150,7 @@ SECRET = ''
 
 ```
 
-In order to create SAS token, you can follow this [document](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/document-translation/create-sas-tokens?tabs=Containers). Alternate solution in case you want one scoped credentials that can be used for the entire storage account. This can be created using the portal as well:
+In order to create SAS token, you can follow this [document](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/document-translation/create-sas-tokens?tabs=Containers). Alternate solution in case you want one scoped credentials that can be used for the entire storage account. This can be created using the portal:
 
 - Click on 'Shared Access Signature' in the Security + Networking blads:
 
@@ -179,25 +206,3 @@ CREATE EXTERNAL TABLE table_name
 ```
 
 After this activity is completed, you can access the table using the serverless SQL pool, or from [Power BI](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/export-to-data-lake-data-powerbi#prerequisites).
-
-## Working with this sample
-
-As part of the sample we included bicep code, which will create the minimum required resources for it to run.
-
-1. You are expected to create a resource group in which the resources would be created.
-
-2. Clone (or fork) this repository.
-
-3. Edit ```deploy/bicep/param.json``` file and provide your values, they should be self explained.
-
-4. Open a command line and run ```az deployment group create --resource-group <your rg name> --template-file main.bicep --parameters @param.json``` on the 'bicep' folder.
-
-5. Open the newly created Synpase workspace, it should open without errors. There you should have two linked ADLS Gen2 items, one is the storage account named ```medalionsynapse<suffix>``` and the other is ? TODO.
-
-6. Point the workspace to the cloned/forked repository [see document](https://docs.microsoft.com/en-us/azure/synapse-analytics/cicd/source-control).
-
-7. Modify the linked services parameter to reflect real values - it is the same value from the bicep ```param.json``` file named ```suffix```. Once you update it as part of the linked service name ```medalion_storage``` it would be reflected in all affected integration datasets.
-
-8. Run the 'Copy Data Samples' pipeline. This will copy the control file and the data samples to your local repository.
-
-9. Run the 'Process Factories Data'. This will run the Bronze to Silver transformations per factory and per data model.
