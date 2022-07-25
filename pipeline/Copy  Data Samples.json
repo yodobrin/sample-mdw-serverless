@@ -154,6 +154,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"thisisatestparameter": {
+				"type": "string",
+				"defaultValue": "110011"
+			}
+		},
 		"annotations": []
 	}
 }
