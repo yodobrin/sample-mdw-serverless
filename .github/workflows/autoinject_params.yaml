@@ -6,8 +6,8 @@ on:
 
 env:
   TEMPLATE_FILE: ./medalionsynapse12/TemplateForWorkspace.json
-  PARAM_FILE: ./medalionsynapse12/MedalionParams.json
-  OUTPUT_FILE: ./medalionsynapse12/TemplateParametersForWorkspace.json
+  PARAM_FILE: ./medalionsynapse12/TemplateParametersForWorkspace.json
+  OUTPUT_FILE: ./medalionsynapse12/MedalionParams.json
 
 jobs:
   inject-params:
