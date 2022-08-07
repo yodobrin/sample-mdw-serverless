@@ -7,7 +7,7 @@ on:
 env:
   TEMPLATE_FILE: ./medalionsynapse12/TemplateForWorkspace.json
   PARAM_FILE: ./medalionsynapse12/TemplateParametersForWorkspace.json
-  OUTPUT_FILE: ./medalionsynapse12/MedalionParams.json
+  OUTPUT_FILE: ./injected_params/MedalionParams.json
 
 jobs:
   inject-params:
@@ -21,6 +21,10 @@ jobs:
         run: |
           git config user.name "GitHub Param Auto-Inject Action"
           git config user.email "autoinjectaction@github.com"
+      - name: checkout main
+        run: |
+          git checkout main 
+          mkdir -p injected_params              
       - name: Run parameters merge script
         run: |
           python3 ./scripts/autoinject_params.py \
@@ -30,5 +34,5 @@ jobs:
       - name: Commit changes
         run: |
           git add $OUTPUT_FILE
-          git commit --amend -m "Auto-inject parameters"
-          git push -f origin ${{ github.ref_name }}
+          git commit -m "Auto-inject parameters"
+          git push origin main 
