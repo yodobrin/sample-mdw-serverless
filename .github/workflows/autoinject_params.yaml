@@ -23,6 +23,7 @@ jobs:
           git config user.email "autoinjectaction@github.com"
       - name: checkout main
         run: |
+          git pull
           git checkout main 
           mkdir -p injected_params              
       - name: Run parameters merge script
