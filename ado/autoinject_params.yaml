@@ -19,11 +19,12 @@ jobs:
       inputs:
         versionSpec: 3.9
     - task: PythonScript@0
-      script: |
-        python ./scripts/autoinject_params.py \
-          --template-file $TEMPLATE_FILE \
-          --param-file $PARAM_FILE \
-          --output-file $OUTPUT_FILE
+      inputs:
+        script: |
+          python ./scripts/autoinject_params.py \
+            --template-file $TEMPLATE_FILE \
+            --param-file $PARAM_FILE \
+            --output-file $OUTPUT_FILE
     - task: Bash@3
       inputs:
         targetType: inline
