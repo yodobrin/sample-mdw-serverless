@@ -1,0 +1,15 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "medalionsynapse12"
+		},
+		"medalion_storage_properties_typeProperties_url": {
+			"value": "@{concat('https://medalionlake',linkedService().suffix, '.dfs.core.windows.net/') }"
+		},
+		"sample_data_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/MSFT-FTA-EMEA-ISV/sample-mdw-serverless/main/sample_data/bronze/"
+		}
+	}
+}

@@ -1,0 +1,948 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "medalionsynapse12"
+		},
+		"medalion_storage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{concat('https://medalionlake',linkedService().suffix, '.dfs.core.windows.net/') }"
+		},
+		"sample_data_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/MSFT-FTA-EMEA-ISV/sample-mdw-serverless/main/sample_data/bronze/"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/Copy  Data Samples')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy control file",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "list_of_files",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "copied_from_git_list",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Get Control File",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Copy control file",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "dropped_files.json",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "dropped_file_list",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach Data Sample",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Control File",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get Control File').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy Data Sample",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "HttpReadSettings",
+												"requestMethod": "GET"
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "gitrtepo",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "dropped_files",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"thisisatestparameter": {
+						"type": "string",
+						"defaultValue": "110011"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/list_of_files')]",
+				"[concat(variables('workspaceId'), '/datasets/copied_from_git_list')]",
+				"[concat(variables('workspaceId'), '/datasets/dropped_file_list')]",
+				"[concat(variables('workspaceId'), '/datasets/gitrtepo')]",
+				"[concat(variables('workspaceId'), '/datasets/dropped_files')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Process Factories Data')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetNewDroppedFiles",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "dropped_files.json",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "dropped_file_list",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Factory of Data Model 2",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetNewDroppedFiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetNewDroppedFiles').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Check if not Processed Model 2",
+									"description": "The update of control file when an entry is processed is out-of-scope for this sample. Once an entry is processed, the control file must be updated. ",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@and(not(item().Processed), equals(item().DataModelName, 'data_model_2'))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Copy Bronze to Silver Model 2",
+												"description": "To keep this sample simple as possible, we will just copy data from bronze to silver without doing any data transformation.",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "JsonSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": false,
+															"wildcardFolderPath": {
+																"value": "@item().FileLocation",
+																"type": "Expression"
+															},
+															"wildcardFileName": "*",
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "JsonReadSettings",
+															"compressionProperties": {
+																"type": "ZipDeflateReadSettings",
+																"preserveZipFileNameAsFolder": false
+															}
+														}
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings",
+															"copyBehavior": "FlattenHierarchy"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"path": "$['dataModelName']"
+																},
+																"sink": {
+																	"name": "dataModelName",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['operation']"
+																},
+																"sink": {
+																	"name": "operation",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['factory']"
+																},
+																"sink": {
+																	"name": "factory",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['lineId']"
+																},
+																"sink": {
+																	"name": "lineId",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['date']"
+																},
+																"sink": {
+																	"name": "date",
+																	"type": "DateTime"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['feature1']"
+																},
+																"sink": {
+																	"name": "feature1",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['dim']"
+																},
+																"sink": {
+																	"name": "dim",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['yield']"
+																},
+																"sink": {
+																	"name": "yield",
+																	"type": "Int32"
+																}
+															}
+														],
+														"collectionReference": "",
+														"mapComplexValuesToString": false
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "bronze",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "silver_data",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Factory of Data Model 1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetNewDroppedFiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetNewDroppedFiles').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Check not if Processed Model 2",
+									"description": "The update of control file when an entry is processed is out-of-scope for this sample. Once an entry is processed, the control file must be updated. ",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@and(not(item().Processed), equals(item().DataModelName, 'data_model_1'))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Copy Bronze to Silver Model 1",
+												"description": "To keep this sample simple as possible, we will just copy data from bronze to silver without doing any data transformation.",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "JsonSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": false,
+															"wildcardFolderPath": {
+																"value": "@item().FileLocation",
+																"type": "Expression"
+															},
+															"wildcardFileName": "*",
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "JsonReadSettings",
+															"compressionProperties": {
+																"type": "ZipDeflateReadSettings",
+																"preserveZipFileNameAsFolder": false
+															}
+														}
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings",
+															"copyBehavior": "FlattenHierarchy"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"path": "$['dataModelName']"
+																},
+																"sink": {
+																	"name": "dataModelName",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['operation']"
+																},
+																"sink": {
+																	"name": "operation",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['factory']"
+																},
+																"sink": {
+																	"name": "factory",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['lineId']"
+																},
+																"sink": {
+																	"name": "lineId",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['date']"
+																},
+																"sink": {
+																	"name": "date",
+																	"type": "DateTime"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['feature1']"
+																},
+																"sink": {
+																	"name": "feature1",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['dim']"
+																},
+																"sink": {
+																	"name": "dim",
+																	"type": "Int32"
+																}
+															},
+															{
+																"source": {
+																	"path": "$['data']['yield']"
+																},
+																"sink": {
+																	"name": "yield",
+																	"type": "Int32"
+																}
+															}
+														],
+														"collectionReference": "",
+														"mapComplexValuesToString": false
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "bronze",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "silver_data",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-07-05T10:55:15Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/dropped_file_list')]",
+				"[concat(variables('workspaceId'), '/datasets/bronze')]",
+				"[concat(variables('workspaceId'), '/datasets/silver_data')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/bronze')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "medalion_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "*",
+						"folderPath": {
+							"value": "@item().FileLocation",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					},
+					"compression": {
+						"type": "ZipDeflate"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/medalion_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/copied_from_git_list')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "medalion_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "bronze"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/medalion_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/dropped_file_list')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "medalion_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "bronze"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/medalion_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/dropped_files')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "medalion_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "bronze"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/medalion_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/gitrtepo')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sample_data",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@concat(item().FileLocation, '/daily.zip')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/sample_data')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/list_of_files')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sample_data",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "dropped_files.json"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/sample_data')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/silver_data')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "medalion_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@item().FileLocation",
+							"type": "Expression"
+						},
+						"fileSystem": "silver"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/medalion_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/medalion_storage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"suffix": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('medalion_storage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sample_data')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('sample_data_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Create-External-Tables')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "creating gold tables",
+				"folder": {
+					"name": "factories"
+				},
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'gold_factories') \n\tCREATE EXTERNAL DATA SOURCE [gold_factories] \n\tWITH (\n\t\tLOCATION = 'abfss://gold@parameters('your_lake_storage').dfs.core.windows.net' \n\t)\nGO\n\n-- Create a table to be used by power bi, the simple query is used just as reference\n\nCREATE EXTERNAL TABLE sampletable1\n    WITH (\n        LOCATION = 'sampletable1/',  \n        DATA_SOURCE = [gold_factories],\n        FILE_FORMAT = [SynapseParquetFormat]  \n)\n    AS \n\tselect * \n\tFROM\n    OPENROWSET(\n        BULK 'https://parameters('your_lake_storage').dfs.core.windows.net/silver/factory=parameters('factory_number')/**',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n\nselect count(*) from sampletable1\n\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "factories",
+						"poolName": "Built-in"
+					},
+					"resultLimit": -1
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Initi DB')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Create DB, master key and scoped credentials.",
+				"folder": {
+					"name": "factories"
+				},
+				"content": {
+					"query": "\n-- Create a DB - run this statment first\nCREATE DATABASE factories\n-- Create Master Key (if not already created) \n-- Note: change to the created DB scope\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = parameters('sql_password');\n-- Create credentials\nCREATE DATABASE SCOPED CREDENTIAL [factories_cred]\nWITH IDENTITY='SHARED ACCESS SIGNATURE',  \n\nSECRET = parameters('your_sas_token')",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "factories",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/test-notebook')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "86ed5515-9fe4-4353-863f-5e796ceef914"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"# what about this, where is it saved?"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		}
+	]
+}
