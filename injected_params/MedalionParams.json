@@ -11,6 +11,9 @@
 		"sample_data_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com/MSFT-FTA-EMEA-ISV/sample-mdw-serverless/main/sample_data/bronze/"
 		},
+		"your_make_belive": {
+			"value": "-"
+		},
 		"your_lake_storage": {
 			"value": "-"
 		},
