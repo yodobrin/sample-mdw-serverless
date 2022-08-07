@@ -3,6 +3,7 @@
 import argparse
 import json
 import re
+import time
 
 
 def merge_parameters(template_file_path, param_file_path):
@@ -20,6 +21,8 @@ def merge_parameters(template_file_path, param_file_path):
         for buff in file:
             for param_name in pattern.findall(buff):
                 merged_params[param_name] = existing_params.get(param_name, {"value": "-"})
+    # Finally, write a timestamp parameter:
+    merged_params["AUTOINJECT_PARAMS_RAN_AT"] = int(time.time())
     return {
         **param_file,
         "parameters": merged_params
