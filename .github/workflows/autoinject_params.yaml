@@ -28,12 +28,12 @@ jobs:
             --template-file $TEMPLATE_FILE \
             --param-file $PARAM_FILE \
             --output-file $OUTPUT_FILE
-      - name: checkout main
+      - name: checkout auto_inject
         run: |
           git pull
-          git checkout main                      
+          git checkout auto_inject                      
       - name: Commit changes
         run: |
           git add $OUTPUT_FILE
           git commit -m "Auto-inject parameters"
-          git push -f origin main 
+          git push origin auto_inject 
