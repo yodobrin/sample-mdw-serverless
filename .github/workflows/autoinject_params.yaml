@@ -36,4 +36,4 @@ jobs:
         run: |
           git add $OUTPUT_FILE
           git commit -m "Auto-inject parameters"
-          git push origin main 
+          git push -f origin main 
