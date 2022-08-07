@@ -26,6 +26,8 @@
 		"your_sas_token": {
 			"value": "-"
 		},
-		"AUTOINJECT_PARAMS_RAN_AT": 1659865763
+		"AUTOINJECT_PARAMS_RAN_AT": {
+			"value": "1659865963"
+		}
 	}
 }
