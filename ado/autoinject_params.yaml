@@ -1,0 +1,33 @@
+variables:
+- name: TEMPLATE_FILE
+  value: ./medalionsynapse12/TemplateForWorkspace.json
+- name: PARAM_FILE
+  value: ./medalionsynapse12/TemplateParametersForWorkspace.json
+- name: OUTPUT_FILE
+  value: ./medalionsynapse12/MedalionParams.json
+- name: BRANCH_NAME
+  value: workspace_publish
+
+jobs:
+  - job: Auto-inject ADF parameters
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+    - checkout: self
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: 3.9
+    - task: PythonScript@0
+      script: |
+        python ./scripts/autoinject_params.py \
+          --template-file $TEMPLATE_FILE \
+          --param-file $PARAM_FILE \
+          --output-file $OUTPUT_FILE
+    - task: Bash@3
+      inputs:
+        targetType: inline
+        script: |
+          git add $OUTPUT_FILE
+          git commit -m "ADO auto-inject parameters"
+          git push origin $BRANCH_NAME
