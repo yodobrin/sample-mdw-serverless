@@ -9,7 +9,7 @@ variables:
   value: workspace_publish
 
 jobs:
-  - job: Auto-inject ADF parameters
+  - job: Auto_inject_ADF_parameters
     pool:
       vmImage: 'ubuntu-latest'
 
