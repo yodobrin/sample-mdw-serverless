@@ -21,17 +21,17 @@ jobs:
         run: |
           git config user.name "GitHub Param Auto-Inject Action"
           git config user.email "autoinjectaction@github.com"
-      - name: checkout main
-        run: |
-          git pull
-          git checkout main 
-          mkdir -p injected_params              
+          mkdir -p injected_params
       - name: Run parameters merge script
         run: |
           python3 ./scripts/autoinject_params.py \
             --template-file $TEMPLATE_FILE \
             --param-file $PARAM_FILE \
             --output-file $OUTPUT_FILE
+      - name: checkout main
+        run: |
+          git pull
+          git checkout main                      
       - name: Commit changes
         run: |
           git add $OUTPUT_FILE
