@@ -1,0 +1,21 @@
+{
+	"name": "gitrtepo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sample_data",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@concat(item().FileLocation, '/daily.zip')",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
