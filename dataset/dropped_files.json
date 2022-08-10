@@ -13,5 +13,6 @@
 				"fileSystem": "bronze"
 			}
 		}
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

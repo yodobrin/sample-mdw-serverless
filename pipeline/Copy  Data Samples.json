@@ -160,6 +160,8 @@
 				"defaultValue": "110011"
 			}
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2022-07-25T11:46:42Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

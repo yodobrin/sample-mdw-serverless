@@ -1,5 +1,6 @@
 {
 	"name": "sample_data",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "HttpServer",
