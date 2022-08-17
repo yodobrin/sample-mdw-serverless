@@ -1,0 +1,24 @@
+{
+	"name": "testtrig",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Copy  Data Samples",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2022-08-17T07:51:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
