@@ -126,9 +126,8 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Copy Bronze to Silver Model 1",
-										"description": "To keep this sample simple as possible, we will just copy data from bronze to silver without doing any data transformation.",
-										"type": "Copy",
+										"name": "split_by_date_copy1",
+										"type": "AzureFunctionActivity",
 										"dependsOn": [],
 										"policy": {
 											"timeout": "7.00:00:00",
@@ -139,129 +138,17 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"source": {
-												"type": "JsonSource",
-												"storeSettings": {
-													"type": "AzureBlobFSReadSettings",
-													"recursive": false,
-													"wildcardFolderPath": {
-														"value": "@item().FileLocation",
-														"type": "Expression"
-													},
-													"wildcardFileName": "*",
-													"enablePartitionDiscovery": false
-												},
-												"formatSettings": {
-													"type": "JsonReadSettings",
-													"compressionProperties": {
-														"type": "ZipDeflateReadSettings",
-														"preserveZipFileNameAsFolder": false
-													}
-												}
-											},
-											"sink": {
-												"type": "ParquetSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings",
-													"copyBehavior": "FlattenHierarchy"
-												},
-												"formatSettings": {
-													"type": "ParquetWriteSettings"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"mappings": [
-													{
-														"source": {
-															"path": "$['dataModelName']"
-														},
-														"sink": {
-															"name": "dataModelName",
-															"type": "String"
-														}
-													},
-													{
-														"source": {
-															"path": "$['operation']"
-														},
-														"sink": {
-															"name": "operation",
-															"type": "String"
-														}
-													},
-													{
-														"source": {
-															"path": "$['data']['factory']"
-														},
-														"sink": {
-															"name": "factory",
-															"type": "Int32"
-														}
-													},
-													{
-														"source": {
-															"path": "$['data']['lineId']"
-														},
-														"sink": {
-															"name": "lineId",
-															"type": "Int32"
-														}
-													},
-													{
-														"source": {
-															"path": "$['data']['date']"
-														},
-														"sink": {
-															"name": "date",
-															"type": "DateTime"
-														}
-													},
-													{
-														"source": {
-															"path": "$['data']['feature1']"
-														},
-														"sink": {
-															"name": "feature1",
-															"type": "Int32"
-														}
-													},
-													{
-														"source": {
-															"path": "$['data']['dim']"
-														},
-														"sink": {
-															"name": "dim",
-															"type": "Int32"
-														}
-													},
-													{
-														"source": {
-															"path": "$['data']['yield']"
-														},
-														"sink": {
-															"name": "yield",
-															"type": "Int32"
-														}
-													}
-												],
-												"collectionReference": "",
-												"mapComplexValuesToString": false
+											"functionName": "split_by_date",
+											"method": "POST",
+											"body": {
+												"value": "{\n    \"file_name\":\"factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=24/sample.zip\",\n    \"source_container\":\"bronze\",\n    \"target_container\":\"silver\",\n    \"source_cs\":\"DefaultEndpointsProtocol=https;AccountName=medalionlake12;AccountKey=4sSldDD9Iy0GnnScyx8zJuUCIRpEuiNH9NPj3mF+hNs2RulDNb2nmbgso7mnt9LFDlS6YcrhioB8+AStyuomsA==;EndpointSuffix=core.windows.net\",\n    \"target_cs\":\"DefaultEndpointsProtocol=https;AccountName=medalionlake12;AccountKey=4sSldDD9Iy0GnnScyx8zJuUCIRpEuiNH9NPj3mF+hNs2RulDNb2nmbgso7mnt9LFDlS6YcrhioB8+AStyuomsA==;EndpointSuffix=core.windows.net\"\n}\n\n",
+												"type": "Expression"
 											}
 										},
-										"inputs": [
-											{
-												"referenceName": "bronze",
-												"type": "DatasetReference"
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "silver_data",
-												"type": "DatasetReference"
-											}
-										]
+										"linkedServiceName": {
+											"referenceName": "factories functions",
+											"type": "LinkedServiceReference"
+										}
 									}
 								]
 							}
