@@ -165,6 +165,13 @@
 			"source_container": {
 				"type": "string",
 				"defaultValue": "bronze"
+			},
+			"test": {
+				"type": "securestring",
+				"defaultValue": {
+					"type": "SecureString",
+					"value": "**********"
+				}
 			}
 		},
 		"annotations": [],
