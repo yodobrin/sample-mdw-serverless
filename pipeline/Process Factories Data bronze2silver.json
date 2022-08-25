@@ -278,20 +278,6 @@
 			"source_container": {
 				"type": "string",
 				"defaultValue": "bronze"
-			},
-			"source_cs": {
-				"type": "securestring",
-				"defaultValue": {
-					"type": "SecureString",
-					"value": "**********"
-				}
-			},
-			"target_cs": {
-				"type": "securestring",
-				"defaultValue": {
-					"type": "SecureString",
-					"value": "**********"
-				}
 			}
 		},
 		"annotations": [],
