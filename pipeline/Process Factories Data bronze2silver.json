@@ -87,7 +87,7 @@
 											"functionName": "split_by_date",
 											"method": "POST",
 											"body": {
-												"value": "@concat('{',\n        '\"file_name\"',':','\"',item().FileLocation,'/daily.zip\"', ',',\n        '\"source_container\"',':','\"',pipeline().parameters.source_container,'\"', ',',\n        '\"target_cs\"',':','\"',pipeline().parameters.target_container,'\"', ',',\n        '\"source_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"', ',',\n        '\"target_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '}'\n        )\n",
+												"value": "@concat('{',\n        '\"file_name\"',':','\"',item().FileLocation,'/daily.zip\"', ',',\n        '\"source_container\"',':','\"',pipeline().parameters.source_container,'\"', ',',\n        '\"target_container\"',':','\"',pipeline().parameters.target_container,'\"', ',',\n        '\"source_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"', ',',\n        '\"target_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '}'\n        )\n",
 												"type": "Expression"
 											}
 										},
@@ -148,7 +148,7 @@
 											"functionName": "split_by_date",
 											"method": "POST",
 											"body": {
-												"value": "@concat('{',\n        '\"file_name\"',':','\"',item().FileLocation,'/daily.zip\"', ',',\n        '\"source_container\"',':','\"',pipeline().parameters.source_container,'\"', ',',\n        '\"target_cs\"',':','\"',pipeline().parameters.target_container,'\"', ',',\n        '\"source_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"', ',',\n        '\"target_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '}'\n        )\n",
+												"value": "@concat('{',\n        '\"file_name\"',':','\"',item().FileLocation,'/daily.zip\"', ',',\n        '\"source_container\"',':','\"',pipeline().parameters.source_container,'\"', ',',\n        '\"target_container\"',':','\"',pipeline().parameters.target_container,'\"', ',',\n        '\"source_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"', ',',\n        '\"target_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '}'\n        )\n",
 												"type": "Expression"
 											}
 										},
