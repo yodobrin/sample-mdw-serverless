@@ -1,2 +1,7 @@
 deploy/bicep/param_local.json
 deploy/bicep/test.rest
+sample_data/bronze/factory=1354010702/dataModelName=data_model_1/y=2022/m=06/.DS_Store
+functions/split_by_date/test.rest
+sample_data/bronze/factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=24/sample.json
+sample_data/bronze/factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=24/sample.zip
+functions/.funcignore
