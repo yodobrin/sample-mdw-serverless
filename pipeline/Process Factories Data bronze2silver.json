@@ -5,7 +5,14 @@
 			{
 				"name": "GetNewDroppedFiles",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get CS from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -80,7 +87,7 @@
 											"functionName": "split_by_date",
 											"method": "POST",
 											"body": {
-												"value": "{\n    \"file_name\":\"factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=24/sample.zip\",\n    \"source_container\":\"bronze\",\n    \"target_container\":\"silver\",\n    \"source_cs\":\"\",\n    \"target_cs\":\"\"\n}\n\n",
+												"value": "@concat('{',\n        '\"file_name\"',':','\"',item().FileLocation,'\"',\n        '\"source_container\"',':','\"',pipeline().parameters.source_container,'\"',\n        '\"target_cs\"',':','\"',pipeline().parameters.target_container,'\"',\n        '\"source_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '\"target_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '}'\n        )\n",
 												"type": "Expression"
 											}
 										},
@@ -155,6 +162,31 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Get CS from AKV",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://medalionakv12.vault.azure.net/secrets/medalion-acc-cs?api-version=7.0",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -165,13 +197,6 @@
 			"source_container": {
 				"type": "string",
 				"defaultValue": "bronze"
-			},
-			"test": {
-				"type": "securestring",
-				"defaultValue": {
-					"type": "SecureString",
-					"value": "**********"
-				}
 			}
 		},
 		"annotations": [],
