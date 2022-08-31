@@ -148,7 +148,7 @@
 											"functionName": "split_by_date",
 											"method": "POST",
 											"body": {
-												"value": "{\n    \"file_name\":\"factory=1354010702/dataModelName=data_model_1/y=2022/m=06/d=24/sample.zip\",\n    \"source_container\":\"bronze\",\n    \"target_container\":\"silver\",\n    \"source_cs\":\"\",\n    \"target_cs\":\"\"\n}\n\n",
+												"value": "@concat('{',\n        '\"file_name\"',':','\"',item().FileLocation,'\"',\n        '\"source_container\"',':','\"',pipeline().parameters.source_container,'\"',\n        '\"target_cs\"',':','\"',pipeline().parameters.target_container,'\"',\n        '\"source_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '\"target_cs\"',':','\"',activity('Get CS from AKV').output.value,'\"',\n        '}'\n        )\n",
 												"type": "Expression"
 											}
 										},
