@@ -181,7 +181,7 @@
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
 					},
-					"method": "POST",
+					"method": "GET",
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
