@@ -8,6 +8,9 @@
 		"bronze_accountKey": {
 			"value": ""
 		},
+		"factories functions_functionKey": {
+			"value": ""
+		},
 		"medalionsynapse12-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
@@ -17,6 +20,9 @@
 		"bronze_properties_typeProperties_url": {
 			"value": "https://medalionlake12.dfs.core.windows.net/"
 		},
+		"factories functions_properties_typeProperties_functionAppUrl": {
+			"value": "https://factories-functions.azurewebsites.net"
+		},
 		"medalion_storage_properties_typeProperties_url": {
 			"value": "@{concat('https://medalionlake',linkedService().suffix, '.dfs.core.windows.net/') }"
 		},
@@ -24,7 +30,7 @@
 			"value": "https://medalionlake12.dfs.core.windows.net"
 		},
 		"sample_data_properties_typeProperties_url": {
-			"value": "https://raw.githubusercontent.com/MSFT-FTA-EMEA-ISV/sample-mdw-serverless/main/sample_data/bronze/"
+			"value": "https://raw.githubusercontent.com/yodobrin/sample-mdw-serverless/main/sample_data/bronze/"
 		},
 		"test_to_b_del_properties_typeProperties_url": {
 			"value": "https://medalionlake12.dfs.core.windows.net/"
