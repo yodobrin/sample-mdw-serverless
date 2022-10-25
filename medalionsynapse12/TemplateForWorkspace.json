@@ -19,17 +19,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'medalionsynapse12-WorkspaceDefaultSqlServer'"
 		},
-		"test_to_b_del_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'test_to_b_del'"
-		},
 		"bronze_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://medalionlake12.dfs.core.windows.net/"
 		},
 		"factories functions_properties_typeProperties_functionAppUrl": {
 			"type": "string",
-			"defaultValue": "https://factories-functions.azurewebsites.net"
+			"defaultValue": "parameters('function_url)"
 		},
 		"medalion_storage_properties_typeProperties_url": {
 			"type": "string",
@@ -42,10 +38,6 @@
 		"sample_data_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com/yodobrin/sample-mdw-serverless/main/sample_data/bronze/"
-		},
-		"test_to_b_del_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://medalionlake12.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -1161,38 +1153,13 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/test_to_b_del')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('test_to_b_del_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('test_to_b_del_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/testtrig')]",
 			"type": "Microsoft.Synapse/workspaces/triggers",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Copy  Data Samples",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
+				"runtimeState": "Stopped",
+				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
@@ -1203,9 +1170,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/pipelines/Copy  Data Samples')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
